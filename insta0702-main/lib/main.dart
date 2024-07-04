@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(
@@ -62,10 +64,19 @@ class _MyAppState extends State<MyApp> {
 
   }
 
+  saveData() async{
+    var storage = await SharedPreferences.getInstance();
+    storage.setString('name','john');
+    var result=storage.get('name');
+    print(result);
+  }
+
   @override
   void initState() {
     super.initState();
+    saveData();
     getData();
+
   }
 
 
@@ -169,7 +180,14 @@ class _HomeState extends State<Home> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('좋아요 ${widget.state[i]['likes']}'),
-                          Text('글쓴이 ${widget.state[i]['user']}'),
+                          GestureDetector(
+                              child: Text('글쓴이 ${widget.state[i]['user']}'),
+                              onTap:(){
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (c)=>Profile()));
+                              }
+                          ),
+                          Text(widget.state[i]['date']),
                           Text('글내용 ${widget.state[i]['content']}'),],
                       )
                     )
@@ -217,6 +235,18 @@ class Upload extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class Profile extends StatelessWidget {
+  const Profile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Text('프로필 페이지'),
     );
   }
 }
