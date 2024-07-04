@@ -9,12 +9,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(
-      MaterialApp(
-          theme: style.theme,
-          home:MyApp()
-  ),
+  runApp(ChangeNotifierProvider(create: (c)=>Store1(),
+        child: MaterialApp(
+            theme: style.theme,
+            home:MyApp()
+          ),
+      ),
   );
+}
+
+class Store1 extends ChangeNotifier{
+  var name='john kim';
+
+  changeName(){
+    name='john park';
+    notifyListeners();
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -245,8 +255,14 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Text('프로필 페이지'),
+      appBar: AppBar(title:Text(context.watch<Store1>().name)),
+      body: Column(
+        children: [
+          ElevatedButton(onPressed: (){
+            context.read<Store1>().changeName();
+          }, child: Text('버튼'))
+        ],
+      )
     );
   }
 }
