@@ -9,7 +9,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(create: (c)=>Store1(),
+  runApp(MultiProvider(
+    providers:[
+      ChangeNotifierProvider(create:(c)=>Store1()),
+      ChangeNotifierProvider(create:(c)=>Store2()),
+    ],
         child: MaterialApp(
             theme: style.theme,
             home:MyApp()
@@ -18,11 +22,30 @@ void main() {
   );
 }
 
-class Store1 extends ChangeNotifier{
-  var name='john kim';
+class Store2 extends ChangeNotifier{
+  var name = 'das kim';
+}
 
-  changeName(){
-    name='john park';
+class Store1 extends ChangeNotifier{
+  var follow=0;
+  var friends= false;
+  var profileImage=[];
+  
+  getData() async {
+    var result =await http.get(Uri.parse('https://codingapple1.github.io/app/profile.json'));
+    var result2 = jsonDecode(result.body);
+    profileImage=result2;
+    notifyListeners();
+  }
+  
+  addFollow(){
+    if (friends==false){
+      follow++;
+      friends=true;
+    } else {
+      follow--;
+      friends=false;
+    }
     notifyListeners();
   }
 }
@@ -255,12 +278,20 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:Text(context.watch<Store1>().name)),
-      body: Column(
+      appBar: AppBar(title:Text(context.watch<Store2>().name)),
+      body: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          Icon(Icons.circle, color: Colors.grey,),
+          Text('팔로워 ${context.watch<Store1>().follow}명'),
           ElevatedButton(onPressed: (){
-            context.read<Store1>().changeName();
-          }, child: Text('버튼'))
+            context.read<Store1>().addFollow();
+          }, child: Text('팔로우')),
+          ElevatedButton(onPressed:(){
+            context.read<Store1>().getData();
+          },
+              child: Text('이미지 가져오기'))
+
         ],
       )
     );
