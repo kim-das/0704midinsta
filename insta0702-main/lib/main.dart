@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import './style.dart' as style;
 import 'package:http/http.dart' as http;
@@ -279,21 +280,41 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title:Text(context.watch<Store2>().name)),
-      body: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Icon(Icons.circle, color: Colors.grey,),
-          Text('팔로워 ${context.watch<Store1>().follow}명'),
-          ElevatedButton(onPressed: (){
-            context.read<Store1>().addFollow();
-          }, child: Text('팔로우')),
-          ElevatedButton(onPressed:(){
-            context.read<Store1>().getData();
-          },
-              child: Text('이미지 가져오기'))
-
+      body:CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child:ProfileHeader(),
+          ),
+          SliverGrid(delegate: SliverChildBuilderDelegate(
+              (c,i)=>Container(color: Colors.grey,),
+              childCount:13,
+          ), gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2))
         ],
       )
     );
   }
 }
+
+
+class ProfileHeader extends StatelessWidget {
+  const ProfileHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Icon(Icons.circle, color: Colors.grey,),
+        Text('팔로워 ${context.watch<Store1>().follow}명'),
+        ElevatedButton(onPressed: (){
+          context.read<Store1>().addFollow();
+        }, child: Text('팔로우')),
+        ElevatedButton(onPressed:(){
+          context.read<Store1>().getData();
+        },
+            child: Text('이미지 가져오기'))
+      ],
+    );
+  }
+}
+
