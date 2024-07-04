@@ -9,6 +9,8 @@ import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
+import 'notification.dart';
+
 void main() {
   runApp(MultiProvider(
     providers:[
@@ -45,6 +47,7 @@ class Store1 extends ChangeNotifier{
       friends=true;
     } else {
       follow--;
+      friends=false;
       friends=false;
     }
     notifyListeners();
@@ -110,6 +113,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     saveData();
     getData();
+    initNotification(context);
 
   }
 
@@ -117,6 +121,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(child:Text('+'), onPressed: (){
+        showNotification();
+      },),
       appBar: AppBar(
         title:Text('Instagram'),
         actions: [
