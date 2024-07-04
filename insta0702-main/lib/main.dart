@@ -285,10 +285,13 @@ class Profile extends StatelessWidget {
           SliverToBoxAdapter(
             child:ProfileHeader(),
           ),
-          SliverGrid(delegate: SliverChildBuilderDelegate(
-              (c,i)=>Container(color: Colors.grey,),
-              childCount:13,
-          ), gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2))
+          SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                (c,i)=>Image.network(
+                  context.watch<Store1>().profileImage[i],
+                  fit: BoxFit.cover),
+              childCount:context.watch<Store1>().profileImage.length),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2))
         ],
       )
     );
